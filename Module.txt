@@ -1,0 +1,12 @@
+﻿Name: Custom Forms Edit
+AntiForgery: enabled
+Author: Richard Garside
+Website: http://www.nogginbox.co.uk	
+Version: 1.0
+OrchardVersion: 1.6
+Description: Description for the module
+Features:
+    NogginBox.CustomFormsEdit:
+        Description: Description for feature NogginBox.CustomFormsEdit.
+		Category: Forms
+		Dependencies: Contents
