@@ -8,24 +8,19 @@ using Orchard.Themes;
 using Orchard.UI.Notify;
 using OrchardContents = Orchard.Core.Contents;
 
-using Orchard.Security;
-//using Orchard.ContentPermissions.ViewModels;
-
 namespace NogginBox.CustomFormsEdit.Controllers
 {
 	[ValidateInput(false), Themed]
 	public class HomeController : Controller, IUpdateModel
 	{
 		private readonly IAuthorizer _authorizer;
-		private readonly IAuthenticationService _authenticationService;
 		private readonly IOrchardServices _services;
 
 		public Localizer T { get; set; }
 
-		public HomeController(IAuthorizer authorizer, IAuthenticationService authenticationService, IOrchardServices services)
+		public HomeController(IAuthorizer authorizer, IOrchardServices services)
 		{
 			_authorizer = authorizer;
-			_authenticationService = authenticationService;
 			_services = services;
 		}
 
@@ -44,6 +39,7 @@ namespace NogginBox.CustomFormsEdit.Controllers
 			}
 
 			var shape = _services.ContentManager.BuildEditor(content);
+
 			return View((object)shape);
 		}
 
@@ -72,6 +68,8 @@ namespace NogginBox.CustomFormsEdit.Controllers
 			// Todo: Redirect them back to actual content
             return RedirectToAction("Edit");
         }
+
+
 
 		private bool HasPermissionToEditThisContent(IContent content)
 		{
