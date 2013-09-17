@@ -66,8 +66,6 @@
   <ItemGroup>
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
-    <Content Include="Scripts\Web.config" />
-    <Content Include="Styles\Web.config" />
     <Content Include="Properties\AssemblyInfo.cs" />
     <Content Include="Module.txt" />
   </ItemGroup>
@@ -85,9 +83,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Routes.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Views\Home\Edit.cshtml" />
   </ItemGroup>
