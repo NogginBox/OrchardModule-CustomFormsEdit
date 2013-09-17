@@ -9,4 +9,4 @@ Features:
     NogginBox.CustomFormsEdit:
         Description: Description for feature NogginBox.CustomFormsEdit.
 		Category: Forms
-		Dependencies: Contents
+		Dependencies: Contents, Roles
