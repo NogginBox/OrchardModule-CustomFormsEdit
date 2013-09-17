@@ -1,4 +1,12 @@
-﻿@using (Html.BeginFormAntiForgeryPost())
+﻿@{
+	var titlePart = Model.ContentItem.TitlePart;
+	var title = titlePart != null ? "Edit " + titlePart.Title : null;
+	Layout.Title = title ?? "Edit content";
+}
+@if (title != null) {
+	<h1>@title</h1>
+}
+@using (Html.BeginFormAntiForgeryPost())
 {
     @Html.ValidationSummary()
     @Display(Model)
