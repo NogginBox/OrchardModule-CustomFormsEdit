@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Orchard;
+using Orchard.Autoroute.Models;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Aspects;
 using Orchard.Localization;
@@ -40,6 +41,8 @@ namespace NogginBox.CustomFormsEdit.Controllers
 
 			var shape = _services.ContentManager.BuildEditor(content);
 
+			var route = content.As<AutoroutePart>();
+
 			return View((object)shape);
 		}
 
@@ -52,8 +55,7 @@ namespace NogginBox.CustomFormsEdit.Controllers
 			if(!HasPermissionToEditThisContent(content))
 			{
 				_services.Notifier.Error(T("You don't have permission to edit this content."));
-				// Todo: Redirect them back to actual content
-				return View();
+				return RedirectFor(content);
 			}
 
             var shape = _services.ContentManager.UpdateEditor(content, this);
@@ -65,8 +67,7 @@ namespace NogginBox.CustomFormsEdit.Controllers
 
             _services.Notifier.Information(T("The content has been saved."));
 
-			// Todo: Redirect them back to actual content
-            return RedirectToAction("Edit");
+            return RedirectFor(content);
         }
 
 
@@ -90,6 +91,17 @@ namespace NogginBox.CustomFormsEdit.Controllers
 
             return user.Id == common.Owner.Id;
         }
+
+		private ActionResult RedirectFor(IContent content)
+		{
+			var route = content.As<AutoroutePart>();
+			if (route != null)
+			{
+				return Redirect("~/" + route.Path);
+			}
+
+            return RedirectToAction("Edit");
+		}
 
 		#region IUpdateModel Methods
 
