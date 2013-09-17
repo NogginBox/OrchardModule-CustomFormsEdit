@@ -2,58 +2,64 @@
 using Orchard;
 using Orchard.ContentManagement;
 using Orchard.Localization;
+using Orchard.Security;
 using Orchard.Themes;
 using Orchard.UI.Notify;
+using OrchardContents = Orchard.Core.Contents;
 
 namespace NogginBox.CustomFormsEdit.Controllers
 {
 	[ValidateInput(false), Themed]
 	public class HomeController : Controller, IUpdateModel
 	{
-		private IOrchardServices Services { get; set; }
+		private readonly IAuthorizer _authorizer;
+		private readonly IOrchardServices _services;
+
 		public Localizer T { get; set; }
 
-		public HomeController(IOrchardServices services)
+		public HomeController(IAuthorizer authorizer, IOrchardServices services)
 		{
-			Services = services;
+			_authorizer = authorizer;
+			_services = services;
 		}
 
 
 		public ActionResult Edit(int contentId)
 		{
-			var content = Services.ContentManager.Get(contentId);
+			var content = _services.ContentManager.Get(contentId);
 			if (content == null) return HttpNotFound();
 
-			// Todo: Check permissions
-			/*if(!Services.Authorizer.Authorize(Permissions.ViewProfiles, user, null)) {
-                return HttpNotFound();
-            }*/
+			if(!_authorizer.Authorize(OrchardContents.Permissions.EditOwnContent, content, T("You don't have permission to edit this content")))
+			{
+				return View();
+			}
 
-			var shape = Services.ContentManager.BuildEditor(content);
+			var shape = _services.ContentManager.BuildEditor(content);
 			return View((object)shape);
 		}
 
 		[HttpPost, ActionName("Edit")]
 		public ActionResult EditContent(int contentId)
 		{
-			var content = Services.ContentManager.Get(contentId);
+			var content = _services.ContentManager.Get(contentId);
 			if (content == null) return HttpNotFound();
 
-			/*if (Services.WorkContext.CurrentUser == null) {
-				return HttpNotFound();
-			}*/
+			if(!_authorizer.Authorize(OrchardContents.Permissions.EditOwnContent, content, T("You don't have permission to edit this content")))
+			{
+				// Todo: Redirect them back to actual content
+				return View();
+			}
 
-            //IUser user = Services.WorkContext.CurrentUser;
-
-            var shape = Services.ContentManager.UpdateEditor(content, this);
+            var shape = _services.ContentManager.UpdateEditor(content, this);
             if (!ModelState.IsValid)
 			{
-				Services.TransactionManager.Cancel();
+				_services.TransactionManager.Cancel();
 				return View("Edit", (object)shape);
             }
 
-            Services.Notifier.Information(T("Your content has been saved."));
+            _services.Notifier.Information(T("The content has been saved."));
 
+			// Todo: Redirect them back to actual content
             return RedirectToAction("Edit");
         }
 

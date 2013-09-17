@@ -21,7 +21,7 @@ namespace NogginBox.CustomFormsEdit
 				{
 					Priority = 6,
 					Route = new Route(
-						"Content/Edit/{contentId}",
+						"Contents/Edit/{contentId}",
 						new RouteValueDictionary
 						{
 							{"area", "NogginBox.CustomFormsEdit"},
