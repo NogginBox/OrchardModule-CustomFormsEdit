@@ -2,7 +2,6 @@
 using Orchard;
 using Orchard.Autoroute.Models;
 using Orchard.ContentManagement;
-using Orchard.ContentManagement.Aspects;
 using Orchard.Localization;
 using Orchard.Security;
 using Orchard.Themes;
@@ -14,14 +13,14 @@ namespace NogginBox.CustomFormsEdit.Controllers
 	[ValidateInput(false), Themed]
 	public class HomeController : Controller, IUpdateModel
 	{
-		private readonly IAuthorizer _authorizer;
+		private readonly CustomFormsEditService _customFormsEditService;
 		private readonly IOrchardServices _services;
 
 		public Localizer T { get; set; }
 
 		public HomeController(IAuthorizer authorizer, IOrchardServices services)
 		{
-			_authorizer = authorizer;
+			_customFormsEditService = new CustomFormsEditService(authorizer);
 			_services = services;
 		}
 
@@ -33,15 +32,13 @@ namespace NogginBox.CustomFormsEdit.Controllers
 
 			// Todo: Check for common part
 
-			if(!HasPermissionToEditThisContent(content))
+			if(!_customFormsEditService.UserHasPermissionToEditThisContent(content, _services.WorkContext.CurrentUser))
 			{
 				_services.Notifier.Error(T("You don't have permission to edit this content."));
 				return View();
 			}
 
 			var shape = _services.ContentManager.BuildEditor(content);
-
-			var route = content.As<AutoroutePart>();
 
 			return View((object)shape);
 		}
@@ -52,7 +49,7 @@ namespace NogginBox.CustomFormsEdit.Controllers
 			var content = _services.ContentManager.Get(contentId);
 			if (content == null) return HttpNotFound();
 
-			if(!HasPermissionToEditThisContent(content))
+			if(!_customFormsEditService.UserHasPermissionToEditThisContent(content, _services.WorkContext.CurrentUser))
 			{
 				_services.Notifier.Error(T("You don't have permission to edit this content."));
 				return RedirectFor(content);
@@ -68,28 +65,6 @@ namespace NogginBox.CustomFormsEdit.Controllers
             _services.Notifier.Information(T("The content has been saved."));
 
             return RedirectFor(content);
-        }
-
-
-
-		private bool HasPermissionToEditThisContent(IContent content)
-		{
-			return
-				_authorizer.Authorize(OrchardContents.Permissions.EditContent, content)
-				||
-				(_authorizer.Authorize(OrchardContents.Permissions.EditOwnContent, content) && HasOwnership(_services.WorkContext.CurrentUser, content));
-		}
-
-		private static bool HasOwnership(IUser user, IContent content)
-		{
-            if (user == null || content == null)
-                return false;
-
-            var common = content.As<ICommonPart>();
-            if (common == null || common.Owner == null)
-                return false;
-
-            return user.Id == common.Owner.Id;
         }
 
 		private ActionResult RedirectFor(IContent content)
