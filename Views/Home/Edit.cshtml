@@ -11,3 +11,11 @@
     @Html.ValidationSummary()
     @Display(Model)
 }
+
+@if (Model.ShowDeleteButton) {
+	String postMethod = "../Delete/" + Model.ContentItem.Id;
+	using (Html.BeginFormAntiForgeryPost(postMethod))
+	{
+		<button type="submit">@T("Delete")</button>
+	}
+}

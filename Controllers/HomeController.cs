@@ -24,6 +24,26 @@ namespace NogginBox.CustomFormsEdit.Controllers
 			_services = services;
 		}
 
+		[HttpPost]
+		public ActionResult Delete(int contentId)
+		{
+			var content = _services.ContentManager.Get(contentId);
+			if (content == null) return HttpNotFound();
+
+			if(!_customFormsEditService.UserHasPermissionToDeleteThisContent(content, _services.WorkContext.CurrentUser))
+			{
+				_services.Notifier.Error(T("You don't have permission to delete this content."));
+				return RedirectFor(content);
+			}
+
+            _services.ContentManager.Remove(content);
+            
+
+            _services.Notifier.Information(T("The content has been deleted."));
+
+			return Redirect("~/");
+		}
+
 
 		public ActionResult Edit(int contentId)
 		{
@@ -32,13 +52,16 @@ namespace NogginBox.CustomFormsEdit.Controllers
 
 			// Todo: Check for common part
 
-			if(!_customFormsEditService.UserHasPermissionToEditThisContent(content, _services.WorkContext.CurrentUser))
+			var currentUser = _services.WorkContext.CurrentUser;
+
+			if(!_customFormsEditService.UserHasPermissionToEditThisContent(content, currentUser))
 			{
 				_services.Notifier.Error(T("You don't have permission to edit this content."));
 				return View();
 			}
 
 			var shape = _services.ContentManager.BuildEditor(content);
+			shape.ShowDeleteButton = _customFormsEditService.UserHasPermissionToDeleteThisContent(content, currentUser);
 
 			return View((object)shape);
 		}

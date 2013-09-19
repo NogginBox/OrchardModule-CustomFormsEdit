@@ -1,6 +1,7 @@
 ﻿using Orchard.ContentManagement;
 using Orchard.ContentManagement.Aspects;
 using Orchard.Security;
+using Orchard.Security.Permissions;
 using OrchardContents = Orchard.Core.Contents;
 
 namespace NogginBox.CustomFormsEdit
@@ -14,15 +15,21 @@ namespace NogginBox.CustomFormsEdit
 			_authorizer = authorizer;
 		}
 
+		public bool UserHasPermissionToDeleteThisContent(ContentItem content, IUser user)
+		{
+			return _authorizer.Authorize(OrchardContents.Permissions.DeleteContent, content) ||
+					UserOwnsContentAndHasPermissionTo(content, user, OrchardContents.Permissions.DeleteOwnContent);
+		}
+
 		public bool UserHasPermissionToEditThisContent(IContent content, IUser user)
 		{
 			return _authorizer.Authorize(OrchardContents.Permissions.EditContent, content) ||
-					UserOwnsContentAndHasPermissionToEdit(content, user);
+					UserOwnsContentAndHasPermissionTo(content, user, OrchardContents.Permissions.EditOwnContent);
 		}
 
-		public bool UserOwnsContentAndHasPermissionToEdit(IContent content, IUser user)
+		private bool UserOwnsContentAndHasPermissionTo(IContent content, IUser user, Permission permission)
 		{
-			return _authorizer.Authorize(OrchardContents.Permissions.EditOwnContent, content) && HasOwnership(user, content);
+			return _authorizer.Authorize(permission, content) && HasOwnership(user, content);
 		}
 
 		private static bool HasOwnership(IUser user, IContent content)

@@ -22,8 +22,9 @@ namespace NogginBox.CustomFormsEdit
 					var currentUser = _services.WorkContext.CurrentUser;
 					if(currentUser == null) return;
 
-					// Todo: Think about best thing to check for when displaying this. Perhaps check for edit wrapper instead
-					if (context.ShapeMetadata.DisplayType != "Detail" || !_customFormsEditService.UserOwnsContentAndHasPermissionToEdit(context.Shape.ContentItem, currentUser)) return;
+					// Check it's a detail view and user has edit permission for content
+					if (context.ShapeMetadata.DisplayType != "Detail" ||
+							!_customFormsEditService.UserHasPermissionToEditThisContent(context.Shape.ContentItem, currentUser)) return;
 
 					context.ShapeMetadata.Wrappers.Add("CustomFormsEditWrapper");
 				});
