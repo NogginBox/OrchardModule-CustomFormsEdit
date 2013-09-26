@@ -8,7 +8,10 @@ namespace NogginBox.CustomFormsEdit
 	{
 		public int Create() {
 			ContentDefinitionManager.AlterPartDefinition("CustomFormsEditLinkPart",
-				builder => builder.Attachable());
+				builder => builder
+					.Attachable()
+					.WithDescription("Attach this part to add custom form edit links to a content type.")
+			);
 
 			return 1;
 		}

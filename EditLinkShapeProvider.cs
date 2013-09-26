@@ -1,9 +1,11 @@
 ﻿using Orchard;
 using Orchard.DisplayManagement.Descriptors;
+using Orchard.Environment.Extensions;
 using Orchard.Security;
 
 namespace NogginBox.CustomFormsEdit
 {
+	[OrchardFeature("NogginBox.CustomFormsEdit.LinkOnAllContent")]
 	public class EditLinkShapeProvider : IShapeTableProvider
 	{
 		private readonly CustomFormsEditService _customFormsEditService;

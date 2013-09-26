@@ -6,7 +6,12 @@ Version: 1.0
 OrchardVersion: 1.6
 Description: Description for the module
 Features:
-    NogginBox.CustomFormsEdit:
-        Description: Description for feature NogginBox.CustomFormsEdit.
+	NogginBox.CustomFormsEdit:
+		Description: Lets users who have permission edit content on the front end.
 		Category: Forms
 		Dependencies: Orchard.Autoroute, Contents
+	NogginBox.CustomFormsEdit.LinkOnAllContent
+		Name: Custom Forms Edit Links
+		Description: Adds a CustomFormsEdit edit link to all content the logged in user can edit.
+		Category: Forms
+		Dependencies: NogginBox.CustomFormsEdit
