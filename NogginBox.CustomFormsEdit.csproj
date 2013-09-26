@@ -87,7 +87,9 @@
   <ItemGroup>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="CustomFormsEditService.cs" />
+    <Compile Include="Drivers\CustomFormsEditLinkDriver.cs" />
     <Compile Include="EditLinkShapeProvider.cs" />
+    <Compile Include="Migration.cs" />
     <Compile Include="Routes.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parts\CustomFormsEditLink.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="placement.info" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
